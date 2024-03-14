@@ -1,0 +1,140 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+
+public class newattempt extends JFrame {
+    private JButton button, button1;
+
+    private JLabel label, label1;
+    private int buttonWidth = 100;
+    private int buttonHeight = 50;
+    private int frameWidth = 400;
+    private int frameHeight = 500;
+    private static final int MOUSE_SAFE_DISTANCE = 40;
+    ImageIcon image = new ImageIcon("download.png");
+    ImageIcon response = new ImageIcon("r.jpg");
+
+    Image scaledImage = response.getImage().getScaledInstance(buttonWidth, buttonHeight, Image.SCALE_SMOOTH);
+    ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+    public newattempt(){
+        initializeUI();
+        setupEvents();
+    }
+
+    private void initializeUI(){
+
+        button = new JButton("нет");
+        setLayout(null);//spui efectiv ferestrei să nu utilizeze niciun manager de layout, ceea ce înseamnă că vei fi responsabil de poziționarea manuală a fiecărei componente în cadrul ferestrei.
+        button.setBounds((frameWidth - buttonWidth) / 2, (frameHeight - buttonHeight) / 2, buttonWidth, buttonHeight);//that will set the button in the perfect middle
+        button.setFocusable(false);
+        button.setBackground(new Color(116, 176, 108));
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setFont(new Font("Comic Sans", Font.TRUETYPE_FONT, 20));
+        button.setBorder(BorderFactory.createEtchedBorder());
+
+        button1 = new JButton("да");
+        button1.setBounds((frameWidth - buttonWidth) / 2, (frameHeight - buttonHeight) / 2, buttonWidth, buttonHeight);//that will set the button in the perfect middle
+        button1.setFocusable(false);
+        button1.setIcon(scaledIcon);
+        button1.setVerticalTextPosition(SwingConstants.CENTER);
+        button1.setHorizontalTextPosition(SwingConstants.CENTER);
+        button1.setFont(new Font("Comic Sans", Font.TRUETYPE_FONT, 20));
+        button1.setBorder(BorderFactory.createEtchedBorder());
+
+
+        label = new JLabel("ты гей?");
+        label.setBounds(133, (frameHeight - buttonHeight) / 2 - 55, 200, 30);
+        label.setForeground(new Color(66, 22, 223));
+        label.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 40));
+
+
+        add(button);
+        add(button1);
+        add(label);
+        setTitle("тест на гея");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setSize(frameWidth, frameHeight);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+        setIconImage(image.getImage());
+
+    }
+
+    private void setupEvents() {
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                moveButton();//Muta cand mouse-ul suprapune buttonul
+            }
+        });
+
+        //pentru ca uneori butonul vine sub mouse si nu am putut face ceva ca sa scap de asta
+
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                moveButton(); // Mută butonul când este apăsat
+            }
+        });
+
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                createNewFrame();
+            }
+        });
+    }
+
+    private void moveButton(){
+        int mouseX = MouseInfo.getPointerInfo().getLocation().x;
+        int mouseY = MouseInfo.getPointerInfo().getLocation().y;
+
+        int newX, newY;
+
+        do {
+            newX = (int) (Math.random() * (frameWidth - buttonWidth));
+            newY = (int) (Math.random() * (frameHeight - buttonHeight));
+
+            // Noile coordonate nu depășesc limitele frame-ului
+            newX = Math.min(Math.max(newX, 0), frameWidth - buttonWidth);
+            newY = Math.min(Math.max(newY, 0), frameHeight - buttonHeight);
+
+        } while (Math.abs(mouseX - newX) < MOUSE_SAFE_DISTANCE && Math.abs(mouseY - newY) < MOUSE_SAFE_DISTANCE);
+
+        button.setLocation(newX, newY);
+    }
+
+    private void createNewFrame() {
+        JFrame newFrame = new JFrame();
+        newFrame.setSize(180, 120);
+        newFrame.setLocationRelativeTo(null);
+        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        newFrame.setVisible(true);
+        newFrame.setIconImage(image.getImage());
+        newFrame.setResizable(false);
+
+        label1 = new JLabel("я тоже");
+
+        label1.setForeground(new Color(66, 22, 223));
+        label1.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 40));
+        label1.setHorizontalAlignment(SwingConstants.CENTER);
+        label1.setVerticalAlignment(SwingConstants.CENTER);
+
+        newFrame.add(label1);
+
+        newFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // When the newFrame is closing, exit the application
+                System.exit(0);
+            }
+        });
+
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(newattempt::new);
+    }
+}
